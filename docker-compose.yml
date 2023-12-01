@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+  mongodb:
+    image: mongo:7.0.4-jammy
+    ports:
+      - '27017:27017'
+    volumes:
+      - database:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      timeout: 20s
+      interval: 5s
+      retries: 4
+  rest-api:
+    build: .
+    image: rest-api
+    container_name: rest-api
+    ports:
+      - '8080:8080'
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 5
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    environment:
+      ENVIRONMENT: local
+      DB_URL: jdbc:mysql://db:3306/users
+      DB_USER: root
+      DB_PASS: password
+    links:
+      - mongodb:app_db
+volumes:
+  database:
