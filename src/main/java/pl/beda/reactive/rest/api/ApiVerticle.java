@@ -9,8 +9,11 @@ import io.vertx.ext.auth.jwt.JWTAuth;
 import io.vertx.ext.mongo.MongoClient;
 import io.vertx.ext.web.Router;
 import pl.beda.reactive.rest.api.handler.*;
+import pl.beda.reactive.rest.api.repository.ItemRepository;
 import pl.beda.reactive.rest.api.repository.UserRepository;
+import pl.beda.reactive.rest.api.router.ItemRouter;
 import pl.beda.reactive.rest.api.router.UserRouter;
+import pl.beda.reactive.rest.api.service.ItemService;
 import pl.beda.reactive.rest.api.service.TokenService;
 import pl.beda.reactive.rest.api.service.UserService;
 import pl.beda.reactive.rest.api.utils.ConfigUtils;
@@ -29,20 +32,26 @@ public class ApiVerticle extends AbstractVerticle {
         final JWTAuth jwtAuth = JWTAuth.create(vertx, JwtUtils.getConfiguration());
 
         final UserRepository userRepository = new UserRepository(dbClient);
+        final ItemRepository itemRepository = new ItemRepository(dbClient);
 
         final TokenService tokenService = new TokenService(jwtAuth, userRepository);
         final UserService userService = new UserService(userRepository);
+        final ItemService itemService = new ItemService(tokenService, itemRepository);
 
         final UserHandler userHandler = new UserHandler(userService);
+        final ItemHandler itemHandler = new ItemHandler(itemService);
         final TokenHandler tokenHandler = new TokenHandler(tokenService);
 
         final UserValidationHandler userValidationHandler = new UserValidationHandler(vertx);
+        final ItemValidationHandler itemValidationHandler = new ItemValidationHandler(vertx);
 
         final UserRouter userRouter = new UserRouter(vertx, userHandler, tokenHandler, userValidationHandler);
+        final ItemRouter itemRouter = new ItemRouter(vertx, itemHandler, tokenHandler, itemValidationHandler);
 
         final Router router = Router.router(vertx);
         ErrorHandler.buildHandler(router);
         userRouter.buildUserRouter(router);
+        itemRouter.buildItemRouter(router);
 
         buildHttpServer(vertx, promise, router);
     }
