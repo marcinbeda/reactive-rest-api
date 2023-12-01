@@ -45,8 +45,8 @@ public class ApiVerticle extends AbstractVerticle {
         final UserValidationHandler userValidationHandler = new UserValidationHandler(vertx);
         final ItemValidationHandler itemValidationHandler = new ItemValidationHandler(vertx);
 
-        final UserRouter userRouter = new UserRouter(vertx, userHandler, tokenHandler, userValidationHandler);
-        final ItemRouter itemRouter = new ItemRouter(vertx, itemHandler, tokenHandler, itemValidationHandler);
+        final UserRouter userRouter = new UserRouter(userHandler, tokenHandler, userValidationHandler);
+        final ItemRouter itemRouter = new ItemRouter(itemHandler, tokenHandler, itemValidationHandler);
 
         final Router router = Router.router(vertx);
         ErrorHandler.buildHandler(router);

@@ -33,7 +33,7 @@ public class TokenService {
                 .onComplete(ar -> {
                     if (ar.result() == null) {
                         LOGGER.error("Token creation failed.");
-                        ResponseUtils.buildErrorResponse(rc, HttpResponseStatus.BAD_REQUEST.code(), "Token creation failed.");
+                        ResponseUtils.buildErrorResponse(rc, HttpResponseStatus.UNAUTHORIZED.code(), "Token creation failed.");
                     } else {
                         OutputTokenDto outputTokenDto = new OutputTokenDto(jwtAuth.generateToken(new JsonObject().put("UUID", ar.result().getString("id"))));
                         LOGGER.info("Token has been created.");

@@ -11,13 +11,11 @@ import pl.beda.reactive.rest.api.handler.UserValidationHandler;
 
 public class UserRouter {
 
-    private final Vertx vertx;
     private final UserHandler userHandler;
     private final TokenHandler tokenHandler;
     private final UserValidationHandler userValidationHandler;
 
-    public UserRouter(Vertx vertx, UserHandler userHandler, TokenHandler tokenHandler, UserValidationHandler userValidationHandler) {
-        this.vertx = vertx;
+    public UserRouter(UserHandler userHandler, TokenHandler tokenHandler, UserValidationHandler userValidationHandler) {
         this.userHandler = userHandler;
         this.tokenHandler = tokenHandler;
         this.userValidationHandler = userValidationHandler;
