@@ -15,6 +15,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.stubbing.Answer;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import pl.beda.reactive.rest.api.dto.input.InputUserDto;
+import pl.beda.reactive.rest.api.model.User;
 import pl.beda.reactive.rest.api.repository.UserRepository;
 import pl.beda.reactive.rest.api.utils.ResponseUtils;
 
@@ -50,7 +51,7 @@ public class UserServiceTest {
             Mockito.when(userRepository.findByLogin("test"))
                     .thenReturn(Future.future(jsonObjectPromise -> jsonObjectPromise.complete(null)));
 
-            Mockito.when(userRepository.insert(Mockito.any()))
+            Mockito.when(userRepository.insert(Mockito.any(User.class)))
                     .thenReturn(Future.future(jsonObjectPromise -> jsonObjectPromise.complete("6569be83f00edd19430eb77c")));
 
             UserService userService = new UserService(userRepository);
@@ -70,7 +71,7 @@ public class UserServiceTest {
         Mockito.when(userRepository.findByLogin("test"))
                 .thenReturn(Future.future(jsonObjectPromise -> jsonObjectPromise.complete(new JsonObject().put("password", encoder.encode(password)))));
 
-        Mockito.when(userRepository.insert(Mockito.any()))
+        Mockito.when(userRepository.insert(Mockito.any(User.class)))
                 .thenReturn(Future.future(jsonObjectPromise -> jsonObjectPromise.complete("6569be83f00edd19430eb77c")));
 
         UserService userService = new UserService(userRepository);
